@@ -1,0 +1,7 @@
+#include <stdio.h>
+
+int main(void)
+{
+    // calling the print function
+    printf("hello, world\n");
+}
