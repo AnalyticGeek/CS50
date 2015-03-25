@@ -1,0 +1,138 @@
+// validate credit card numbers
+
+#include <stdio.h>
+#include <cs50.h>
+#include <math.h>
+
+int main(void)
+{
+
+    // get card number input
+    
+    long long ccnum;
+    do
+    {
+        printf("enter card number\n");
+        ccnum = GetLongLong();
+    }
+    while(ccnum < 0);
+        
+    int p[] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
+    long long denom = 1000000000000000;
+    int digits;
+    
+    // rejecting numbers with 17+ digits
+    
+    if (ccnum / (denom * 10) > 0 )
+    {
+        printf("INVALID\n");
+        exit(0);
+    } 
+    
+    // if else if else to set the number of digits in the card
+    
+    if (ccnum / (denom / 100) < 1)
+    {
+        digits = 13;
+        denom /= 1000;
+    }
+    else if (ccnum / (denom) < 1)
+    {
+        digits = 15;
+        denom /= 10;
+    }
+    else 
+        digits = 16;    
+    
+    // parses the individual digits
+    
+    for( int i = 0; i < digits; i++)
+    {
+        p[i] = (ccnum / denom) % 10;
+        // each pass grabs the subsequent digit
+        denom /= 10;
+    }
+
+    // testing card validity
+    
+    int cksum = 0, fnck = 0;
+    
+    // AMEX test, initial if verifies card type
+    
+    if (p[0] == 3 && (p[1] == 4 || p[1] == 7))
+    {
+        for (int j = 1; j < 14; j += 2)
+        {
+            if ((p[j] * 2) > 9)
+            {
+                // - 9 gives same a 1 + digit
+                cksum += (p[j] * 2) - 9; 
+            }
+            else
+                cksum += (p[j] * 2);
+        }
+        fnck = cksum + p[0] + p[2] + p[4] + p[6] + p[8] + p[10] + p[12] + p[14];
+        
+        if (fnck % 10 == 0)
+        {
+            printf("AMEX\n");
+        }
+        else
+            printf("INVALID\n");
+    }
+    
+    // MC test, first if verifies card type
+    
+    else if (p[0] == 5 && (p[1] > 0 && p[1] < 6))
+    {
+        for (int j = 0; j < 16; j += 2)
+        {
+            if ((p[j] * 2) > 9)
+            {
+                // - 9 gives same a 1 + digit
+                cksum += (p[j] * 2) - 9;
+            }
+            else
+                cksum += (p[j] * 2);
+        }
+
+        fnck = cksum + p[1] + p[3] + p[5] + p[7] + p[9] + p[11] + p[13] + p[15];
+        
+        if (fnck % 10 == 0)
+        {
+            printf("MASTERCARD\n");
+        }
+        else
+            printf("INVALID\n");  
+
+    }
+    
+    // Visa test, initial if verifies card type
+    
+    else if (p[0] == 4)
+    {
+        for (int j = 0; j < 16; j += 2)
+        {
+            if ((p[j] * 2) > 9)
+            {
+                // - 9 gives same a 1 + digit
+                cksum += (p[j] * 2) - 9;
+            }
+            else
+                cksum += (p[j] * 2);
+        }
+        fnck = cksum + p[1] + p[3] + p[5] + p[7] + p[9] + p[11] + p[13] + p[15];
+        
+        if (fnck % 10 == 0)
+        {
+            printf("VISA\n");
+        }
+        else
+            printf("INVALID\n");
+    }
+    
+    // all other numbers print invalid
+    
+    else
+        printf("INVALID\n");
+}
