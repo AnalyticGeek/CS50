@@ -1,0 +1,58 @@
+// calculate change program using greedy algorithm
+
+// including stdio for printf, cs50 for GetFloat, math for rounding
+
+#include <stdio.h>
+#include <cs50.h>
+#include <math.h>
+
+int main(void)
+{
+    // get required change from user
+    
+    float chngdue;
+
+    do 
+    {   
+        printf("how much change is due? 'DD.CC' format\n");
+        chngdue = GetFloat();
+    }
+    while (chngdue < 0);
+    
+    // set coins and convert input to int
+    
+    int coins = 0, qtrs = 0, dims = 0, nkls = 0, pnys = 0;
+    int chng = (int) round(chngdue * 100);
+
+    // while loops check for biggest coins first and count coins
+        
+    while (chng >= 25)
+    {
+        qtrs = qtrs + 1;
+        chng = chng - 25;      
+    }
+   
+    while (chng >= 10)
+    {
+        dims = dims + 1;
+        chng = chng - 10;      
+    }
+    
+    while (chng >= 5)
+    {
+        nkls = nkls + 1;
+        chng = chng - 5;      
+    }
+     
+    while (chng > 0)
+    {
+        pnys = pnys + 1;
+        chng = chng - 1;      
+    }
+ 
+    // adds all the coins together
+           
+    coins = qtrs + dims + nkls + pnys;
+    
+    printf("%d\n", coins);
+}
